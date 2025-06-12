@@ -114,7 +114,7 @@ end
 	Yields the current thread until the signal fires and returns the arguments provided by the signal.
 --]]
 module.Wait = function(self: EventObject)
-	return promise.fromEvent(self._event)
+	return promise.fromEvent(self._event.Event)
 end
 
 return module
