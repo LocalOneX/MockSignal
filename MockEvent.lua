@@ -35,8 +35,8 @@ export type EventObject = typeof(setmetatable(
 	{ __index = {} :: {
 		new: () -> EventObject,
 		Fire: (self: EventObject, ...any) -> (),
-		Connect: (self: EventObject, callback: (...any) -> ()) -> (),
-		Once: (self: EventObject, callback: (...any) -> ()) -> (),
+		Connect: (self: EventObject, callback: (...any) -> ()) -> EventDisconnectionObject,
+		Once: (self: EventObject, callback: (...any) -> ()) -> EventDisconnectionObject,
 		Wait: (self: EventObject) -> promise.AnyPromise
 	}}
 )) 
