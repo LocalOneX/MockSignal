@@ -21,12 +21,12 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local promise = require(ReplicatedStorage:FindFirstChild("Promise"))
 
 type EventDisconnectionObject = {
-	Disconnect: () -> ()
-}
+	Disconnect: () -> (),
+} 
 
 type RawEventObject = {
-	_events: { (...any) -> EventDisconnectionObject },
-	_tempEvents: { (...any) -> EventDisconnectionObject },
+	_events: { (...any) -> () },
+	_tempEvents: { (...any) -> () },
 	_event: BindableEvent,
 } 
 
@@ -62,10 +62,10 @@ end
 module.Fire = function(self: EventObject, ...)
 	local args = {...}
 	
-	local function onConnection(callback: (...any) -> EventDisconnectionObject) 
+	local function onConnection(callback: (...any) -> ()) 
 		local success, response = pcall(callback, unpack(args))
 		if not success then
-			error(debug.traceback(`:{response}:`), 2)
+			warn(debug.traceback(`:{response}:`))
 		end
 	end
 	
@@ -82,8 +82,7 @@ end
 module.Connect = function(self: EventObject, callback: (...any) -> ())
 	table.insert(self._events, callback)
 	
-	local object = {}
-	
+	local object = setmetatable({}, {__index = self}) 
 	function object:Disconnect()
 		local i = table.find(self._events, callback)
 		if i then
@@ -100,12 +99,11 @@ end
 module.Once = function(self: EventObject, callback: (...any) -> ()) 
 	table.insert(self._tempEvents, callback)
 
-	local object = {}
-
+	local object = setmetatable({}, {__index = self}) 
 	function object:Disconnect()
-		local i = table.find(self._events, callback)
+		local i = table.find(self._tempEvents, callback)
 		if i then
-			table.remove(self._events, i)
+			table.remove(self._tempEvents, i)
 		end
 	end
 
