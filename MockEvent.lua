@@ -62,7 +62,7 @@ end
 module.Fire = function(self: EventObject, ...)
 	local args = {...}
 	
-	local function onConnection(callback: (...any) -> ()) 
+	local function onConnection(callback: (...any) -> EventDisconnectionObject) 
 		local success, response = pcall(callback, unpack(args))
 		if not success then
 			error(debug.traceback(`:{response}:`), 2)
