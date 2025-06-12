@@ -20,12 +20,16 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 -- Dependencies
 local promise = require(ReplicatedStorage:FindFirstChild("Promise"))
 
+type EventDisconnectionObject = {
+	Disconnect: () -> ()
+}
+
 type RawEventObject = {
-	_events: { (...any) -> () },
-	_tempEvents: { (...any) -> () },
+	_events: { (...any) -> EventDisconnectionObject },
+	_tempEvents: { (...any) -> EventDisconnectionObject },
 	_event: BindableEvent,
-	
 } 
+
 export type EventObject = typeof(setmetatable(
 	{} :: RawEventObject,
 	{ __index = {} :: {
@@ -87,7 +91,7 @@ module.Connect = function(self: EventObject, callback: (...any) -> ())
 		end
 	end
 	
-	return object
+	return object :: EventDisconnectionObject
 end
 
 --[[
@@ -105,7 +109,7 @@ module.Once = function(self: EventObject, callback: (...any) -> ())
 		end
 	end
 
-	return object
+	return object :: EventDisconnectionObject
 end
 
 --[[
