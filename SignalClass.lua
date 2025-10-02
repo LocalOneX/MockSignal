@@ -50,7 +50,7 @@ function Prototype:Fire<T...>(...: T...)
 	for i = #self._events, 1, -1 do
 		local fn = self._events[i]
 		task.spawn(fn, ...)
-		table.remove(self._events, i)
+		--table.remove(self._events, i)
 	end 
 	for i = #self._threads, 1, -1 do
 		local thread = self._threads[i]
